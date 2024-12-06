@@ -16,9 +16,10 @@ def report(percentage):
         print(f"{percentage} % complete")
 
 def gnlse(T, A, w0, gamma, betas, loss, fr, RT, flength, nsaves):
+    global last_printed_report_percentage
 
     n = len(T)
-    dT = T[2]-T[1]  # grid parameters
+    dT = T[1]-T[0]                                  # grid parameters
     V = 2*pi*np.arange(-n/2, n/2)/(n*dT)            # frequency grid
     alpha = log(10**(loss/10))                      # attenuation coefficient
 
@@ -60,5 +61,5 @@ def gnlse(T, A, w0, gamma, betas, loss, fr, RT, flength, nsaves):
 
     AT, AW = np.array(AT), np.array(AW)
     W = V + w0
-
+    last_printed_report_percentage = 0
     return Z, AT, AW, W
