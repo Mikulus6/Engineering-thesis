@@ -11,14 +11,14 @@ if __name__ == '__main__':
     setup = gnlse.GNLSESetup()
 
     # Numerical parameters
-    setup.resolution = 2**13
-    setup.time_window = 10  # ps
+    setup.resolution = 2**14
+    setup.time_window = 20  # ps
 
     setup.z_saves = 51
 
     # Physical parameters
     setup.wavelength = 10004  # nm
-    setup.fiber_length = .1  # m
+    setup.fiber_length = 2  # m
     setup.raman_model = None #gnlse.raman_blowwood
     setup.self_steepening = True
 
@@ -54,7 +54,8 @@ if __name__ == '__main__':
     peak_power = 51000  # W
 
     # This example extends the original code with additional simulations for
-    setup.pulse_model = gnlse.CWEnvelope(peak_power, Pn=1e-16)
+    # setup.pulse_model = gnlse.CWEnvelope(peak_power, Pn=1e-16)
+    setup.pulse_model = gnlse.GaussianEnvelope(peak_power, 0.1)
     # setup.pulse_model = gnlse.SechEnvelope(peak_power, 4)
 
     print('%s...' % setup.pulse_model.name)
@@ -64,13 +65,13 @@ if __name__ == '__main__':
 
     plt.figure(figsize=(8, 4), facecolor='w', edgecolor='k')
     plt.subplot(1, 2, 1)
-    gnlse.plot_wavelength_vs_distance_logarithmic(
+    gnlse.plot_wavelength_vs_distance(
         solution,
         WL_range=[300, 4000],
         cmap = 'jet')
 
     plt.subplot(1, 2, 2)
-    gnlse.plot_delay_vs_distance_logarithmic(
+    gnlse.plot_delay_vs_distance(
         solution,
         time_range=[-10, 10],
         cmap = 'jet')
@@ -80,13 +81,13 @@ if __name__ == '__main__':
 
     plt.figure(figsize=(8, 4), facecolor='w', edgecolor='k')
     plt.subplot(1, 2, 1)
-    gnlse.plot_wavelength_vs_distance_logarithmic(
+    gnlse.plot_wavelength_vs_distance(
         solution,
         WL_range=[1000, 1100],
         cmap = 'jet')
 
     plt.subplot(1, 2, 2)
-    gnlse.plot_delay_vs_distance_logarithmic(
+    gnlse.plot_delay_vs_distance(
         solution,
         time_range=[-5, 5],
         cmap = 'jet')

@@ -14,13 +14,13 @@ if __name__ == "__main__":
 
     plt.figure(figsize=(8, 4), facecolor='w', edgecolor='k')
     plt.subplot(1, 2, 1)
-    gnlse.plot_wavelength_vs_distance_logarithmic(
+    gnlse.plot_wavelength_vs_distance(
         solution, 
         WL_range=[300, 4000],
         cmap = 'jet')
 
     plt.subplot(1, 2, 2)
-    gnlse.plot_delay_vs_distance_logarithmic(
+    gnlse.plot_delay_vs_distance(
         solution, 
         time_range=[-40, 40],
         cmap = 'jet')
@@ -30,13 +30,13 @@ if __name__ == "__main__":
     
     plt.figure(figsize=(8, 4), facecolor='w', edgecolor='k')
     plt.subplot(1, 2, 1)
-    gnlse.plot_wavelength_vs_distance_logarithmic(
+    gnlse.plot_wavelength_vs_distance(
         solution, 
         WL_range=[1000, 1100],
         cmap = 'jet')
 
     plt.subplot(1, 2, 2)
-    gnlse.plot_delay_vs_distance_logarithmic(
+    gnlse.plot_delay_vs_distance(
         solution, 
         time_range=[-40, 40],
         cmap = 'jet')

@@ -585,7 +585,8 @@ def plot_wavelength_vs_distance(solver, WL_range=None, ax=None,
     newWL = np.linspace(np.min(WL_asc), np.max(WL_asc), IW.shape[1])
     toshow = interpolator(solver.Z, newWL)
 
-    ax.imshow(toshow, origin='lower', aspect='auto', cmap=cmap)
+    ax.imshow(toshow, origin='lower', aspect='auto', cmap=cmap,
+              extent=[np.min(WL_asc), np.max(WL_asc), 0, np.max(solver.Z)])
     ax.set_xlabel("Wavelength [nm]")
     ax.set_ylabel("Distance [m]")
     return ax
@@ -637,7 +638,8 @@ def plot_wavelength_vs_distance_logarithmic(solver, WL_range=None,
     newWL = np.linspace(np.min(WL_asc), np.max(WL_asc), lIW.shape[1])
     toshow = interpolator(solver.Z, newWL)
 
-    ax.imshow(toshow, origin='lower', aspect='auto', cmap=cmap)
+    ax.imshow(toshow, origin='lower', aspect='auto', cmap=cmap,
+              extent=[np.min(WL_asc), np.max(WL_asc), 0, np.max(solver.Z)])
     ax.set_xlabel("Wavelength [nm]")
     ax.set_ylabel("Distance [m]")
     return ax
