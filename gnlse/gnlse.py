@@ -4,7 +4,7 @@ import pyfftw
 import tqdm
 
 from gnlse.common import c
-from gnlse.import_export import write_mat, read_mat
+from gnlse.import_export import write_json, read_json
 
 
 class GNLSESetup:
@@ -33,7 +33,7 @@ class GNLSESetup:
         Fiber dispersion model or ``None`` to model a dispersionless fiber.
     raman_model : function, optional
         Raman scattering model or ``None`` if the effect is to be neglected.
-    self_steepning : bool, optional
+    self_steepening : bool, optional
         Whether to include the effect of self-steepening. Disabled by default.
     rtol : float, optional
         Relative tolerance passed to the ODE solver.
@@ -100,7 +100,7 @@ class Solution:
 
         data = {'t': self.t, 'W': self.W, 'Z': self.Z, 'At': self.At,
                 'AW': self.AW}
-        write_mat(data, path)
+        write_json(data, path)
 
     def from_file(self, path):
         """
@@ -112,7 +112,7 @@ class Solution:
             Path to file.
         """
 
-        data = read_mat(path)
+        data = read_json(path)
         self.t = data['t']
         self.W = data['W']
         self.Z = data['Z']

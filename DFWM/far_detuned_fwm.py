@@ -1,5 +1,3 @@
-"""
-"""
 
 import os
 
@@ -15,7 +13,7 @@ if __name__ == '__main__':
     # Numerical parameters
     setup.resolution = 2**13
     setup.time_window = 10  # ps
-    
+
     setup.z_saves = 51
 
     # Physical parameters
@@ -23,23 +21,23 @@ if __name__ == '__main__':
     setup.fiber_length = .1  # m
     setup.raman_model = None #gnlse.raman_blowwood
     setup.self_steepening = True
-    
+
     #setup.rtol = 1e-8
     #setup.atol = 1e-9
 
     n2 = 2.6e-20  # m^2/W
 
-    # read mat file for neffs to cover interpolation example
-    mat_path = os.path.join(os.path.dirname(__file__), '..',
-                             'data', 'neff_far_detuned_FWM.mat')
-    mat = gnlse.read_mat(mat_path)
+    # read json file for neffs to cover interpolation example
+    json_path = os.path.join(os.path.dirname(__file__), '..',
+                             'data', 'neff_far_detuned_FWM.json')
+    json = gnlse.read_json(json_path)
 
     # wavelengths in nm
-    lambdas = mat['neff'][:, 0] * 1e9
+    lambdas = json['neff'][:, 0] * 1e9
     # neffs
-    neff = mat['neff'][:, 1]
+    neff = json['neff'][:, 1]
     # efective mode area in m^2
-    Aeff = mat['neff'][:, 2] * 1e-12
+    Aeff = json['neff'][:, 2] * 1e-12
 
     # The dispersion model is built from a Taylor expansion with coefficients
     # given below.
@@ -51,7 +49,7 @@ if __name__ == '__main__':
     setup.nonlinearity = gnlse.NonlinearityFromEffectiveArea(
         neff, Aeff, lambdas, setup.wavelength,
         n2=n2, neff_max=10)
-    
+
     # Input pulse parameters
     peak_power = 51000  # W
 
@@ -67,73 +65,72 @@ if __name__ == '__main__':
     plt.figure(figsize=(8, 4), facecolor='w', edgecolor='k')
     plt.subplot(1, 2, 1)
     gnlse.plot_wavelength_vs_distance_logarithmic(
-        solution, 
+        solution,
         WL_range=[300, 4000],
         cmap = 'jet')
 
     plt.subplot(1, 2, 2)
     gnlse.plot_delay_vs_distance_logarithmic(
-        solution, 
+        solution,
         time_range=[-10, 10],
         cmap = 'jet')
 
     plt.tight_layout()
     plt.show()
-    
+
     plt.figure(figsize=(8, 4), facecolor='w', edgecolor='k')
     plt.subplot(1, 2, 1)
     gnlse.plot_wavelength_vs_distance_logarithmic(
-        solution, 
+        solution,
         WL_range=[1000, 1100],
         cmap = 'jet')
 
     plt.subplot(1, 2, 2)
     gnlse.plot_delay_vs_distance_logarithmic(
-        solution, 
+        solution,
         time_range=[-5, 5],
         cmap = 'jet')
 
     plt.tight_layout()
     plt.show()
-    
-    
+
+
     plt.figure(2, figsize=(8,4), dpi=300)
     fig2, ax = plt.subplots()
     gnlse.plot_wavelength_for_distance_slice_logarithmic(
-        solution, 
+        solution,
         WL_range=[3400, 3700],
         ax = ax,
         norm = 51e3)
     ax.set_ylim([-100, 5])
-    
-    
+
+
     plt.figure(2, figsize=(8,4), dpi=300)
     fig2, ax = plt.subplots()
     gnlse.plot_wavelength_for_distance_slice_logarithmic(
-        solution, 
+        solution,
         WL_range=[3400, 3700],
         ax = ax,
         z_slice = [0., 0.01, 0.05, .10],
         norm = 51e3)
     ax.set_ylim([-400, 5])
     ax.grid(True)
-    
+
     plt.figure(2, figsize=(8,4), dpi=300)
     fig2, ax = plt.subplots()
     gnlse.plot_wavelength_for_distance_slice_logarithmic(
-        solution, 
+        solution,
         WL_range=[620, 640],
         ax = ax,
         z_slice = [0., 0.01, 0.05, .10],
         norm = 51e3)
     ax.set_ylim([-400, 5])
     ax.grid(True)
-    
+
     path = "far_detuned_fwm" + \
         "_resolution_" + str(int(np.log(setup.resolution)/np.log(2))) + \
         "_time_window_" + str(setup.time_window) + \
         "_fiber_length_" + str(setup.fiber_length) + \
-        ".mat"
+        ".json"
     print(path)
     solution.to_file(path)
-    
