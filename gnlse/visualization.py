@@ -5,7 +5,7 @@ Various plotting functions for visualizing GNLSE simulations using Matplotlib.
 import numpy as np
 import matplotlib.pyplot as plt
 
-from scipy.interpolate import interp2d
+from scipy.interpolate import RectBivariateSpline
 
 from gnlse.common import c
 
@@ -281,7 +281,6 @@ def plot_wavelength_for_distance_slice_logarithmic(solver, WL_range=None,
         label_i = "z = " + str(solver.Z[i]) + "m"
         ax.plot(WL_asc, lIW[i][:], label=label_i)
 
-    ax.set_xlim([np.min(WL_asc), np.max(WL_asc)])
     ax.set_ylim(-40)
     ax.set_xlabel("Wavelength [nm]")
     ax.set_ylabel("Normalized Spectral Density")
@@ -582,13 +581,11 @@ def plot_wavelength_vs_distance(solver, WL_range=None, ax=None,
     WL_asc = WL_asc[iis]
     IW = IW[:, iis]
 
-    interpolator = interp2d(WL_asc, solver.Z, IW)
+    interpolator = RectBivariateSpline(solver.Z, WL_asc, IW)
     newWL = np.linspace(np.min(WL_asc), np.max(WL_asc), IW.shape[1])
-    toshow = interpolator(newWL, solver.Z)
+    toshow = interpolator(solver.Z, newWL)
 
-    ax.imshow(toshow, origin='lower', aspect='auto', cmap=cmap,
-              extent=[np.min(WL_asc), np.max(WL_asc), 0, np.max(solver.Z)],
-              vmin=0)
+    ax.imshow(toshow, origin='lower', aspect='auto', cmap=cmap)
     ax.set_xlabel("Wavelength [nm]")
     ax.set_ylabel("Distance [m]")
     return ax
@@ -636,14 +633,11 @@ def plot_wavelength_vs_distance_logarithmic(solver, WL_range=None,
 
     WL_asc = WL_asc[iis]
     lIW = lIW[:, iis]
-
-    interpolator = interp2d(WL_asc, solver.Z, lIW)
+    interpolator = RectBivariateSpline(solver.Z, WL_asc, lIW)
     newWL = np.linspace(np.min(WL_asc), np.max(WL_asc), lIW.shape[1])
-    toshow = interpolator(newWL, solver.Z)
+    toshow = interpolator(solver.Z, newWL)
 
-    ax.imshow(toshow, origin='lower', aspect='auto', cmap=cmap,
-              extent=[np.min(WL_asc), np.max(WL_asc), 0, np.max(solver.Z)],
-              vmin=-40)
+    ax.imshow(toshow, origin='lower', aspect='auto', cmap=cmap)
     ax.set_xlabel("Wavelength [nm]")
     ax.set_ylabel("Distance [m]")
     return ax
