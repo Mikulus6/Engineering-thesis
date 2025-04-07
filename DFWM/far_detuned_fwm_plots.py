@@ -6,7 +6,7 @@ if __name__ == "__main__":
     path = "far_detuned_fwm" + \
         "_resolution_14" + \
         "_time_window_20" + \
-        "_fiber_length_0.5" + \
+        "_fiber_length_0.1" + \
         ".json"
 
     solution = gnlse.Solution()

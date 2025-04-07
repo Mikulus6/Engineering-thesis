@@ -18,7 +18,7 @@ if __name__ == '__main__':
 
     # Physical parameters
     setup.wavelength = 10004  # nm
-    setup.fiber_length = 2  # m
+    setup.fiber_length = 0.1  # m
     setup.raman_model = None #gnlse.raman_blowwood
     setup.self_steepening = True
 
@@ -41,7 +41,7 @@ if __name__ == '__main__':
 
     # The dispersion model is built from a Taylor expansion with coefficients
     # given below.
-    loss = 0
+    loss = 0.2
 
     setup.dispersion_model = gnlse.DispersionFiberFromInterpolation(
                                 loss, neff, lambdas, setup.wavelength)
@@ -54,8 +54,8 @@ if __name__ == '__main__':
     peak_power = 51000  # W
 
     # This example extends the original code with additional simulations for
-    # setup.pulse_model = gnlse.CWEnvelope(peak_power, Pn=1e-16)
-    setup.pulse_model = gnlse.GaussianEnvelope(peak_power, 0.1)
+    setup.pulse_model = gnlse.CWEnvelope(peak_power, Pn=1e-16)
+    # setup.pulse_model = gnlse.GaussianEnvelope(peak_power, 0.1)
     # setup.pulse_model = gnlse.SechEnvelope(peak_power, 4)
 
     print('%s...' % setup.pulse_model.name)
