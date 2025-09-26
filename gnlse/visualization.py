@@ -4,6 +4,7 @@ Various plotting functions for visualizing GNLSE simulations using Matplotlib.
 
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.cm as cm
 
 from scipy.interpolate import RectBivariateSpline
 
@@ -225,7 +226,7 @@ def plot_wavelength_for_distance_slice(solver, WL_range=None, ax=None,
 
 def plot_wavelength_for_distance_slice_logarithmic(solver, WL_range=None,
                                                    ax=None,
-                                                   z_slice=None, norm=None):
+                                                   z_slice=None, norm=None, cmap="magma"):
     """Plotting chosen slices of intensity
     in linear scale in wavelength domain.
 
@@ -277,9 +278,10 @@ def plot_wavelength_for_distance_slice_logarithmic(solver, WL_range=None,
             np.min(np.abs(solver.Z - z)) == np.abs(solver.Z - z)
         )[0][0] for z in z_slice]
 
-    for i in iis:
+    cmap_obj = cm.get_cmap(cmap)
+    for index_, i in enumerate(iis):
         label_i = "z = " + str(solver.Z[i]) + "m"
-        ax.plot(WL_asc, lIW[i][:], label=label_i)
+        ax.plot(WL_asc, lIW[i][:], label=label_i, color=cmap_obj(index_/(len(iis)-1)))
 
     ax.set_ylim(-40)
     ax.set_xlabel("Wavelength [nm]")

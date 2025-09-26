@@ -1,8 +1,11 @@
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 import gnlse
 from gnlse.common import c
 from scipy.interpolate import RectBivariateSpline
+
+# TODO: nie za bardzo pamiętam za co odpowiadał ten moduł. Muszę to jeszcze ogarnąć.
 
 
 def get_point(solution_: gnlse.Solution, distance, wavelength):
@@ -11,11 +14,12 @@ def get_point(solution_: gnlse.Solution, distance, wavelength):
     return solution_.AW[distance_index, wavelength_index]
 
 if __name__ == "__main__":
-    path = "far_detuned_fwm" + \
+    path = os.path.join("solutions",
+        "far_detuned_fwm" + \
         "_resolution_14" + \
-        "_time_window_20" + \
-        "_fiber_length_0.1" + \
-        ".json"
+        "_time_window_10" + \
+        "_fiber_length_0.2" + \
+        ".json")
 
     solution = gnlse.Solution()
     solution.from_file(path)

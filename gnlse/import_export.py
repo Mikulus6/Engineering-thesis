@@ -5,6 +5,7 @@ in python as dictionary, and to export dictionary to \\*.json.
 
 """
 
+import os
 import json
 import numpy as np
 
@@ -18,6 +19,7 @@ def read_json(filename):
         return json_dict
 
 def write_json(data: dict, filename):
+    os.makedirs(os.path.dirname(filename), exist_ok=True)
     json_ready = {key: serialize_complex(value.tolist()) for key, value in data.items()}
     with open(filename, 'w') as file:
         json.dump(json_ready, file)
