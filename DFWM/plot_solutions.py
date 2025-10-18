@@ -6,13 +6,13 @@ import gnlse
 def plot_solution(solution_):
     _cmap_1d = "gnuplot"
     _cmap_2d = "CMRmap"
-
     plt.figure(figsize=(8, 4), facecolor='w', edgecolor='k')
     plt.subplot(1, 2, 1)
     gnlse.plot_wavelength_vs_distance_logarithmic(solution_, WL_range=[300, 4000], cmap = _cmap_2d)
 
     plt.subplot(1, 2, 2)
-    gnlse.plot_delay_vs_distance_logarithmic(solution_, time_range=[-40, 40], cmap = _cmap_2d)
+    gnlse.plot_delay_vs_distance_logarithmic(solution_, time_range=[min(solution_.t),
+                                                                    max(solution_.t)], cmap = _cmap_2d)
 
     plt.tight_layout()
     plt.show()
@@ -22,7 +22,8 @@ def plot_solution(solution_):
     gnlse.plot_wavelength_vs_distance_logarithmic(solution_, WL_range=[1000, 1100], cmap = _cmap_2d)
 
     plt.subplot(1, 2, 2)
-    gnlse.plot_delay_vs_distance_logarithmic(solution_, time_range=[-40, 40], cmap = _cmap_2d)
+    gnlse.plot_delay_vs_distance_logarithmic(solution_, time_range=[min(solution_.t),
+                                                                    max(solution_.t)], cmap = _cmap_2d)
 
     plt.tight_layout()
     plt.show()
