@@ -2,6 +2,7 @@ import os
 import numpy as np
 import gnlse
 from DFWM.plot_solutions import plot_solution
+from DFWM.plot_gain import plot_gain
 
 
 def define_setup(resolution, time_window, z_saves, wavelength, fiber_length,
@@ -59,11 +60,12 @@ def solve_gnlse(setup_: gnlse.GNLSESetup):
 
 
 if __name__ == '__main__':
-    setup = define_setup(resolution=2**14, time_window=10, z_saves=51, wavelength=1064, fiber_length=0.2,
+    setup = define_setup(resolution=2**14, time_window=10, z_saves=51, wavelength=1064, fiber_length=0.8,
                          raman_model=None, envelope="CW", rtol=None, atol=None)
 
     solution = solve_gnlse(setup)
     plot_solution(solution)
+    plot_gain(solution)
 
     path = os.path.join("solutions",
            "far_detuned_fwm" + \

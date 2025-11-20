@@ -20,7 +20,7 @@ def plot_initial_parameters():
     plt.figure()
     plt.plot(lambdas, aeff)
     plt.xlabel("Wavelength (nm)")
-    plt.ylabel("Effective Mode Area (m²)")
+    plt.ylabel("Effective Mode Area (m^2)")
     plt.grid(True)
 
     plt.show()

@@ -226,7 +226,8 @@ def plot_wavelength_for_distance_slice(solver, WL_range=None, ax=None,
 
 def plot_wavelength_for_distance_slice_logarithmic(solver, WL_range=None,
                                                    ax=None,
-                                                   z_slice=None, norm=None, cmap="magma"):
+                                                   z_slice=None, norm=None, cmap="magma",
+                                                   plot_gain=False):
     """Plotting chosen slices of intensity
     in linear scale in wavelength domain.
 
@@ -268,6 +269,17 @@ def plot_wavelength_for_distance_slice_logarithmic(solver, WL_range=None,
 
     WL_asc = WL_asc[iio]
     lIW = lIW[:, iio]
+
+    if plot_gain:
+        lIW2 = np.zeros_like(lIW)
+        for x in range(lIW.shape[1]):
+            for y in range(lIW.shape[0]):
+                try:
+                    lIW2[y, x] = max((lIW[y+1, x] - lIW[y, x])/(max(solver.Z)/len(solver.Z)), 0)
+                except IndexError:
+                    lIW2[y, x] = lIW2[y-1, x]
+
+        lIW = lIW2
 
     # indices of interest if no z_slice positions were given
     if z_slice is None:
@@ -595,7 +607,8 @@ def plot_wavelength_vs_distance(solver, WL_range=None, ax=None,
 
 
 def plot_wavelength_vs_distance_logarithmic(solver, WL_range=None,
-                                            ax=None, norm=None, cmap="magma"):
+                                            ax=None, norm=None, cmap="magma",
+                                            *, plot_gain=False):
     """Plotting results in logarithmic scale in wavelength domain.
 
     Parameters
@@ -636,6 +649,18 @@ def plot_wavelength_vs_distance_logarithmic(solver, WL_range=None,
 
     WL_asc = WL_asc[iis]
     lIW = lIW[:, iis]
+
+    if plot_gain:
+        lIW2 = np.zeros_like(lIW)
+        for x in range(lIW.shape[1]):
+            for y in range(lIW.shape[0]):
+                try:
+                    lIW2[y, x] = max((lIW[y+1, x] - lIW[y, x])/(max(solver.Z)/len(solver.Z)), 0)
+                except IndexError:
+                    lIW2[y, x] = lIW2[y-1, x]
+
+        lIW = lIW2
+
     interpolator = RectBivariateSpline(solver.Z, WL_asc, lIW)
     newWL = np.linspace(np.min(WL_asc), np.max(WL_asc), lIW.shape[1])
     toshow = interpolator(solver.Z, newWL)

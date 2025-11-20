@@ -1,7 +1,7 @@
 import os
 import matplotlib.pyplot as plt
 import gnlse
-
+from DFWM.plot_gain import plot_gain
 
 def plot_solution(solution_):
     _cmap_1d = "gnuplot"
@@ -59,9 +59,10 @@ if __name__ == "__main__":
         "far_detuned_fwm" + \
         "_resolution_14" + \
         "_time_window_10" + \
-        "_fiber_length_0.2" + \
+        "_fiber_length_0.6" + \
         ".json")
 
     solution = gnlse.Solution()
     solution.from_file(path)
     plot_solution(solution)
+    plot_gain(solution)
