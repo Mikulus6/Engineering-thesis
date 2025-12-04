@@ -5,6 +5,7 @@ Various plotting functions for visualizing GNLSE simulations using Matplotlib.
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
+from matplotlib.colors import TwoSlopeNorm
 
 from scipy.interpolate import RectBivariateSpline
 
@@ -275,7 +276,7 @@ def plot_wavelength_for_distance_slice_logarithmic(solver, WL_range=None,
         for x in range(lIW.shape[1]):
             for y in range(lIW.shape[0]):
                 try:
-                    lIW2[y, x] = max((lIW[y+1, x] - lIW[y, x])/(max(solver.Z)/len(solver.Z)), 0)
+                    lIW2[y, x] = (lIW[y+1, x] - lIW[y, x])/(max(solver.Z)/len(solver.Z))
                 except IndexError:
                     lIW2[y, x] = lIW2[y-1, x]
 
@@ -608,7 +609,7 @@ def plot_wavelength_vs_distance(solver, WL_range=None, ax=None,
 
 def plot_wavelength_vs_distance_logarithmic(solver, WL_range=None,
                                             ax=None, norm=None, cmap="magma",
-                                            *, plot_gain=False):
+                                            *, plot_gain=False, use_zero_norm: bool = False):
     """Plotting results in logarithmic scale in wavelength domain.
 
     Parameters
@@ -655,7 +656,7 @@ def plot_wavelength_vs_distance_logarithmic(solver, WL_range=None,
         for x in range(lIW.shape[1]):
             for y in range(lIW.shape[0]):
                 try:
-                    lIW2[y, x] = max((lIW[y+1, x] - lIW[y, x])/(max(solver.Z)/len(solver.Z)), 0)
+                    lIW2[y, x] = (lIW[y+1, x] - lIW[y, x])/(max(solver.Z)/len(solver.Z))
                 except IndexError:
                     lIW2[y, x] = lIW2[y-1, x]
 
@@ -665,8 +666,13 @@ def plot_wavelength_vs_distance_logarithmic(solver, WL_range=None,
     newWL = np.linspace(np.min(WL_asc), np.max(WL_asc), lIW.shape[1])
     toshow = interpolator(solver.Z, newWL)
 
-    ax.imshow(toshow, origin='lower', aspect='auto', cmap=cmap,
-              extent=[np.min(WL_asc), np.max(WL_asc), 0, np.max(solver.Z)])
+    if not use_zero_norm:
+        ax.imshow(toshow, origin='lower', aspect='auto', cmap=cmap,
+                  extent=[np.min(WL_asc), np.max(WL_asc), 0, np.max(solver.Z)])
+    else:
+        ax.imshow(toshow, origin='lower', aspect='auto', cmap=cmap,
+                  norm = TwoSlopeNorm(vmin=np.min(toshow), vcenter=0, vmax=np.max(toshow)),
+                  extent=[np.min(WL_asc), np.max(WL_asc), 0, np.max(solver.Z)])
     ax.set_xlabel("Wavelength [nm]")
     ax.set_ylabel("Distance [m]")
     return ax

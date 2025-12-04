@@ -5,16 +5,19 @@ import gnlse
 
 def plot_gain(solution_):
     _cmap_1d = "gnuplot"
-    _cmap_2d = "CMRmap"
+    _cmap_2d = "seismic"
+
+    plt.ioff()
+
     plt.figure(figsize=(4, 4), facecolor='w', edgecolor='k')
     gnlse.plot_wavelength_vs_distance_logarithmic(solution_, WL_range=[300, 4000], cmap = _cmap_2d,
-                                                  plot_gain=True)
+                                                  plot_gain=True, use_zero_norm=True)
     plt.tight_layout()
     plt.show()
 
     plt.figure(figsize=(4, 4), facecolor='w', edgecolor='k')
     gnlse.plot_wavelength_vs_distance_logarithmic(solution_, WL_range=[1000, 1100], cmap = _cmap_2d,
-                                                  plot_gain=True)
+                                                  plot_gain=True, use_zero_norm=True)
     plt.tight_layout()
     plt.show()
 
@@ -52,7 +55,8 @@ if __name__ == "__main__":
         "far_detuned_fwm" + \
         "_resolution_14" + \
         "_time_window_10" + \
-        "_fiber_length_0.6" +\
+        "_fiber_length_0.4" +\
+        "_samples_250"+\
         ".json")
 
     solution = gnlse.Solution()

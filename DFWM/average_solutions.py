@@ -7,9 +7,8 @@ from DFWM.plot_gain import plot_gain
 
 if __name__ == '__main__':
 
-    setup = define_setup(resolution=2**14, time_window=10, z_saves=51, wavelength=1064, fiber_length=0.6,
+    setup = define_setup(resolution=2**14, time_window=10, z_saves=51, wavelength=1064, fiber_length=0.15,
                          raman_model=None, envelope="CW", rtol=None, atol=None)
-
     samples = 10
     solutions = []
 
@@ -22,8 +21,8 @@ if __name__ == '__main__':
                                       W=  np.mean([sol.W for sol in solutions],          axis=0),
                                       w_0=np.mean([sol.w_0 for sol in solutions],        axis=0),
                                       Z=  np.mean([sol.Z for sol in solutions],          axis=0),
-                                      At= np.mean([np.abs(np.sqrt(sol.At)) for sol in solutions], axis=0)**2,
-                                      AW= np.mean([np.abs(np.sqrt(sol.AW)) for sol in solutions], axis=0)**2)
+                                      At= np.sqrt(np.mean([np.abs(sol.At)**2 for sol in solutions], axis=0)),
+                                      AW= np.sqrt(np.mean([np.abs(sol.AW)**2 for sol in solutions], axis=0)))
 
     plot_solution(average_solution)
     plot_gain(average_solution)
