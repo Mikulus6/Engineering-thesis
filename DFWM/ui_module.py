@@ -6,7 +6,7 @@ import re
 class ParameterApp:
     def __init__(self, root):
         self.root = root
-        root.title("Degenerated Four Wave Mixing")
+        root.title("Far-Detuned Four Wave Mixing")
 
         self.pretty_names = {
             "resolution": "rozdzielczość czasowa",
