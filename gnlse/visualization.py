@@ -665,7 +665,7 @@ def plot_wavelength_vs_distance_logarithmic(solver, WL_range=None,
                     lIW2[y, x] = (lIW[y+1, x] - lIW[y, x])/(max(solver.Z)/len(solver.Z))
                 except IndexError:
                     lIW2[y, x] = lIW2[y-1, x]
-
+            print(f"Derivating {x}/{lIW.shape[1]}")
         lIW = lIW2
 
     interpolator = RectBivariateSpline(solver.Z, WL_asc, lIW)
