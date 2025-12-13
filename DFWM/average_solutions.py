@@ -7,10 +7,19 @@ from DFWM.far_detuned_fwm import define_setup, solve_gnlse
 from DFWM.plot_gain import plot_gain
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+import time, datetime
 
 mpl.rcParams['font.family'] = 'Times New Roman'
 mpl.rcParams['font.serif'] = ['Times New Roman']
 mpl.rcParams['axes.unicode_minus'] = False
+
+def calculate_average(solutions_list, *, weights=None):
+    return gnlse.Solution(t=np.average([sol.t for sol in solutions_list],                        weights=weights, axis=0),
+                          W=np.average([sol.W for sol in solutions_list],                        weights=weights, axis=0),
+                          w_0=np.average([sol.w_0 for sol in solutions_list],                    weights=weights, axis=0),
+                          Z=np.average([sol.Z for sol in solutions_list],                        weights=weights, axis=0),
+                          At=np.sqrt(np.average([np.abs(sol.At) ** 2 for sol in solutions_list], weights=weights, axis=0)),
+                          AW=np.sqrt(np.average([np.abs(sol.AW) ** 2 for sol in solutions_list], weights=weights, axis=0)))
 
 
 def average_solutions(resolution, time_window, z_saves, wavelength, fiber_length, rtol, atol, peak_power,
@@ -35,31 +44,45 @@ def average_solutions(resolution, time_window, z_saves, wavelength, fiber_length
     solution_orders_num = math.ceil(math.log(samples, solutions_per_averaging))
     solutions_dict = {x: [] for x in range(solution_orders_num + 1)}
 
-    for i in range(samples):
-        print(f"{i + 1}/{samples} {setup.pulse_model.name}...")
-        solution = solve_gnlse(setup, n2=n2, json_path=input_data_filepath, neff_max=neff_max)
-        solutions_dict[0].append(solution)
+    time_start = time.time()
+    print(f"Time Start: {datetime.datetime.fromtimestamp(time_start)}")
 
-        for order_index, solutions_list in solutions_dict.items():
 
-            if len(solutions_list) >= solutions_per_averaging or\
-               (i == samples - 1 and order_index < solution_orders_num):
+    try:
+        for i in range(samples):
+            print(f"{setup.pulse_model.name} {i + 1}/{samples}")
+            solution = solve_gnlse(setup, n2=n2, json_path=input_data_filepath, neff_max=neff_max)
+            solutions_dict[0].append(solution)
 
-                average_solution = gnlse.Solution(t=  np.mean([sol.t for sol in solutions_list],                     axis=0),
-                                                  W=  np.mean([sol.W for sol in solutions_list],                     axis=0),
-                                                  w_0=np.mean([sol.w_0 for sol in solutions_list],                   axis=0),
-                                                  Z=  np.mean([sol.Z for sol in solutions_list],                     axis=0),
-                                                  At= np.sqrt(np.mean([np.abs(sol.At)**2 for sol in solutions_list], axis=0)),
-                                                  AW= np.sqrt(np.mean([np.abs(sol.AW)**2 for sol in solutions_list], axis=0)))
+            for order_index, solutions_list in solutions_dict.items():
 
-                solutions_dict[order_index] = []
-                solutions_dict[order_index+1].append(average_solution)
+                if len(solutions_list) >= solutions_per_averaging:
 
-        solutions_mem_num = sum({key: len(value) for key, value in solutions_dict.items()}.values())
-        print(f"Solutions in memory: {solutions_mem_num}")
-        memory_usage_history.append((i+1, solutions_mem_num))
+                    average_solution = calculate_average(solutions_list)
 
-    solution_averaged = solutions_dict[max(solutions_dict.keys())][0]
+                    solutions_dict[order_index] = []
+                    solutions_dict[order_index+1].append(average_solution)
+
+            solutions_mem_num = sum({key: len(value) for key, value in solutions_dict.items()}.values())
+            print(f"Solutions in memory: {solutions_mem_num}")
+            memory_usage_history.append((i+1, solutions_mem_num))
+            time_now = time.time()
+            print(f"Estimated finish time: {datetime.datetime.fromtimestamp((time_now - time_start) * (samples / (i+1)) + time_start)}")
+    except KeyboardInterrupt:
+        print("Process interrupted! (KeyboardInterrupt)")
+    except MemoryError:
+        print("Process interrupted! (MemoryError)")
+    except:
+        print("Process interrupted! (Unknown Error")
+
+    solutions_with_weights =\
+        [(calculate_average(value) if len(value) != 0 else None, len(value) * (solutions_per_averaging ** key))
+         for key, value in solutions_dict.items()]
+
+    solutions_with_weights = list(filter(lambda x: not(x[0] is None), solutions_with_weights))
+
+    solutions, weights = zip(*solutions_with_weights)
+    solution_averaged = calculate_average(solutions, weights=weights)
 
     path = os.path.join("solutions",
                         "far_detuned_fwm" + \
@@ -75,7 +98,7 @@ def average_solutions(resolution, time_window, z_saves, wavelength, fiber_length
     plot_solution(solution_averaged)
     plot_gain(solution_averaged)
 
-    x, y = zip(*memory_usage_history[:-1])
+    x, y = zip(*memory_usage_history)
 
     plt.plot(x, y)
     plt.xlabel("Liczba przeprowadzonych modelowań")
@@ -86,6 +109,6 @@ def average_solutions(resolution, time_window, z_saves, wavelength, fiber_length
 
 if __name__ == '__main__':
 
-    average_solutions(resolution=2**14, time_window=10, z_saves=501, wavelength=1064, fiber_length=0.15, rtol=1e-3,
+    average_solutions(resolution=2**14, time_window=10, z_saves=501, wavelength=1064, fiber_length=0.4, rtol=1e-3,
                       atol=1e-4, peak_power = 51000, n2=2.6e-20, neff_max=10, samples=1000,
                       input_data_filepath="../data/neff_far_detuned_FWM.json")

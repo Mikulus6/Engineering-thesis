@@ -52,7 +52,7 @@ def solve_gnlse(setup_: gnlse.GNLSESetup, *, n2 = None, json_path = None, neff_m
     setup_.nonlinearity = gnlse.NonlinearityFromEffectiveArea(neff, aeff, lambdas, setup_.wavelength, n2=n2,
                                                               neff_max=10 if neff_max is None else neff_max)
 
-    print('%s...' % setup_.pulse_model.name)
+    # print('%s...' % setup_.pulse_model.name)
 
     solver = gnlse.GNLSE(setup_)
     return solver.run()

@@ -13,6 +13,8 @@ def plot_solution(solution_):
     _cmap_2d = "CMRmap"
     # plt.figure(figsize=(8, 4), facecolor='w', edgecolor='k')
     # plt.subplot(1, 2, 1)
+
+    plt.figure(figsize=(8, 5), facecolor='w', edgecolor='k')
     gnlse.plot_wavelength_vs_distance_logarithmic(solution_, WL_range=[300, 4000], cmap = _cmap_2d)
 
     # plt.subplot(1, 2, 2)
@@ -24,6 +26,8 @@ def plot_solution(solution_):
 
     # plt.figure(figsize=(8, 4), facecolor='w', edgecolor='k')
     # plt.subplot(1, 2, 1)
+
+    plt.figure(figsize=(8, 5), facecolor='w', edgecolor='k')
     gnlse.plot_wavelength_vs_distance_logarithmic(solution_, WL_range=[1000, 1100], cmap = _cmap_2d)
 
     # plt.subplot(1, 2, 2)
@@ -43,37 +47,84 @@ def plot_solution(solution_):
     # ax.set_xlim([3400+x_margin, 3700-x_margin])
     # ax.grid(True)
 
-    _, ax = plt.subplots()
+    fig = plt.figure(figsize=(8, 5), constrained_layout=True)
+    ax = fig.add_subplot(111)
     gnlse.plot_wavelength_for_distance_slice_logarithmic(solution_, WL_range=[3400, 3700], ax = ax,
-                                                         z_slice = solution_.Z[0::10], norm = plot_norm, cmap=_cmap_1d,
+                                                         z_slice = [0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4],
+                                                         norm = plot_norm, cmap=_cmap_1d,
+                                                         plot_for_zero=True)
+    ax.set_ylim([-210, -15])
+    ax.set_xlim([3400+x_margin, 3700-x_margin])
+    ax.grid(True)
+
+    fig = plt.figure(figsize=(8, 5), constrained_layout=True)
+    ax = fig.add_subplot(111)
+    gnlse.plot_wavelength_for_distance_slice_logarithmic(solution_, WL_range=[620, 640], ax = ax,
+                                                         z_slice = [0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4],
+                                                         norm = plot_norm, cmap=_cmap_1d,
+                                                         plot_for_zero=True)
+    ax.set_ylim([-210, 0])
+    ax.set_xlim([620+x_margin, 640-x_margin])
+    ax.grid(True)
+
+    fig = plt.figure(figsize=(8, 5), constrained_layout=True)
+    ax = fig.add_subplot(111)
+    gnlse.plot_wavelength_for_distance_slice_logarithmic(solution_, WL_range=[1050, 1080], ax = ax,
+                                                         z_slice = [0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4],
+                                                         norm = plot_norm, cmap=_cmap_1d,
+                                                         plot_for_zero=True)
+    ax.set_ylim([-210, 10])
+    ax.set_xlim([1050+x_margin, 1080-x_margin])
+    ax.grid(True)
+
+    plt.legend(loc="upper right")
+    plt.show()
+
+    # ----------------------------------------
+
+    fig = plt.figure(figsize=(8, 5), constrained_layout=True)
+    ax = fig.add_subplot(111)
+    gnlse.plot_wavelength_for_distance_slice_logarithmic(solution_, WL_range=[3400, 3700], ax = ax,
+                                                         z_slice = [0, 0.03, 0.06, 0.09, 0.12, 0.15],
+                                                         norm = plot_norm, cmap=_cmap_1d,
                                                          plot_for_zero=True)
     ax.set_ylim([-210, -90])
     ax.set_xlim([3400+x_margin, 3700-x_margin])
     ax.grid(True)
 
-    _, ax = plt.subplots()
+    fig = plt.figure(figsize=(8, 5), constrained_layout=True)
+    ax = fig.add_subplot(111)
     gnlse.plot_wavelength_for_distance_slice_logarithmic(solution_, WL_range=[620, 640], ax = ax,
-                                                         z_slice = solution_.Z[0::10], norm = plot_norm, cmap=_cmap_1d,
+                                                         z_slice = [0, 0.03, 0.06, 0.09, 0.12, 0.15],
+                                                         norm = plot_norm, cmap=_cmap_1d,
                                                          plot_for_zero=True)
     ax.set_ylim([-210, -85])
     ax.set_xlim([620+x_margin, 640-x_margin])
     ax.grid(True)
 
-    _, ax = plt.subplots()
+    fig = plt.figure(figsize=(8, 5), constrained_layout=True)
+    ax = fig.add_subplot(111)
     gnlse.plot_wavelength_for_distance_slice_logarithmic(solution_, WL_range=[1050, 1080], ax = ax,
-                                                         z_slice = solution_.Z[0::10], norm = plot_norm, cmap=_cmap_1d,
+                                                         z_slice = [0, 0.03, 0.06, 0.09, 0.12, 0.15],
+                                                         norm = plot_norm, cmap=_cmap_1d,
                                                          plot_for_zero=True)
-    ax.set_ylim([-210, 25])
+    ax.set_ylim([-210, 10])
     ax.set_xlim([1050+x_margin, 1080-x_margin])
     ax.grid(True)
+
+    plt.legend(loc="upper right")
     plt.show()
 
-    _, ax = plt.subplots()
+    # ----------------------------------------
+
+    fig = plt.figure(figsize=(8, 5), constrained_layout=True)
+    ax = fig.add_subplot(111)
     gnlse.visualization.plot_wavelength_slice_vs_distance_logarithmic(solution_,
-                                                                      wavelengths=[625, 1064, 3550],
+                                                                      wavelengths=[626, 1064, 3550],
                                                                       ax = ax,
                                                                       norm = plot_norm, cmap=_cmap_1d)
-    ax.set_xlim([0, 0.15])
+
+    ax.set_xlim([0.01, max(solution_.Z)])
     ax.grid(True)
     plt.show()
 
@@ -83,7 +134,7 @@ if __name__ == "__main__":
         "far_detuned_fwm" + \
         "_resolution_14" + \
         "_time_window_10" + \
-        "_fiber_length_0.15" + \
+        "_fiber_length_0.4" + \
         "_samples_1000" +\
         ".json")
 

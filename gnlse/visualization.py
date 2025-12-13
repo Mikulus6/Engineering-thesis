@@ -277,7 +277,7 @@ def plot_wavelength_for_distance_slice_logarithmic(solver, WL_range=None,
         for x in range(lIW.shape[1]):
             for y in range(lIW.shape[0]):
                 try:
-                    lIW2[y, x] = (lIW[y+1, x] - lIW[y, x])/(max(solver.Z)/len(solver.Z))
+                    lIW2[y, x] = (lIW[y+1, x] - lIW[y, x])/(max(solver.Z)/(len(solver.Z - 1)))
                 except IndexError:
                     lIW2[y, x] = lIW2[y-1, x]
 
@@ -303,7 +303,7 @@ def plot_wavelength_for_distance_slice_logarithmic(solver, WL_range=None,
 
     ax.set_ylim(-40)
     ax.set_xlabel("Długość fali [nm]")
-    ax.set_ylabel("Znormalizowana gęstość spektralna" if not plot_gain else "Przyrost gęstości spektralnej [dB/m]")
+    ax.set_ylabel("Znormalizowana gęstość spektralna [dB]" if not plot_gain else "Przyrost gęstości spektralnej [dB/m]")
     ax.legend()
     return ax
 
@@ -662,7 +662,7 @@ def plot_wavelength_vs_distance_logarithmic(solver, WL_range=None,
         for x in range(lIW.shape[1]):
             for y in range(lIW.shape[0]):
                 try:
-                    lIW2[y, x] = (lIW[y+1, x] - lIW[y, x])/(max(solver.Z)/len(solver.Z))
+                    lIW2[y, x] = (lIW[y+1, x] - lIW[y, x])/(max(solver.Z)/(len(solver.Z) - 1))
                 except IndexError:
                     lIW2[y, x] = lIW2[y-1, x]
             print(f"Derivating {x}/{lIW.shape[1]}")
@@ -689,7 +689,7 @@ def plot_wavelength_vs_distance_logarithmic(solver, WL_range=None,
     sm.set_array([])
 
     cbar = plt.colorbar(sm, ax=ax)
-    cbar.set_label("Znormalizowana gęstość spektralna" if not plot_gain else "Przyrost gęstości spektralnej [dB/m]")
+    cbar.set_label("Znormalizowana gęstość spektralna [dB]" if not plot_gain else "Przyrost gęstości spektralnej [dB/m]")
 
     return ax
 
@@ -744,7 +744,7 @@ def plot_wavelength_slice_vs_distance_logarithmic(solver, wavelengths,
         for x in range(lIW.shape[1]):
             for y in range(lIW.shape[0]):
                 try:
-                    lIW2[y, x] = (lIW[y+1, x] - lIW[y, x])/(max(solver.Z)/len(solver.Z))
+                    lIW2[y, x] = (lIW[y+1, x] - lIW[y, x])/(max(solver.Z)/(len(solver.Z)-1))
                 except IndexError:
                     lIW2[y, x] = lIW2[y-1, x]
 
@@ -755,7 +755,7 @@ def plot_wavelength_slice_vs_distance_logarithmic(solver, wavelengths,
     toshow = interpolator(solver.Z, newWL)
 
     ax.set_xlabel("Długość światłowodu [m]")
-    ax.set_ylabel("Znormalizowana gęstość spektralna" if not plot_gain else "Przyrost gęstości spektralnej [dB/m]")
+    ax.set_ylabel("Znormalizowana gęstość spektralna [dB]" if not plot_gain else "Przyrost gęstości spektralnej [dB/m]")
 
     cmap_obj = cm.get_cmap(cmap)
     for index_, wavelength in enumerate(wavelengths):
