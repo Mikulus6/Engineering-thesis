@@ -152,7 +152,7 @@ def plot_delay_for_distance_slice(solver, time_range=None, ax=None,
         )[0][0] for z in z_slice]
 
     for i in iis:
-        label_i = "z = " + str(solver.Z[i]) + "m"
+        label_i = "z = " + str(solver.Z[i]).replace(".", ",") + " m"
         ax.plot(solver.t, It[i][:], label=label_i)
 
     ax.set_xlim(time_range)
@@ -215,7 +215,7 @@ def plot_wavelength_for_distance_slice(solver, WL_range=None, ax=None,
         )[0][0] for z in z_slice]
 
     for i in iis:
-        label_i = "z = " + str(solver.Z[i]) + "m"
+        label_i = "z = " + str(solver.Z[i]).replace(".", ",") + " m"
         ax.plot(WL_asc, IW[i][:], label=label_i)
 
     ax.set_xlim([np.min(WL_asc), np.max(WL_asc)])
@@ -298,7 +298,7 @@ def plot_wavelength_for_distance_slice_logarithmic(solver, WL_range=None,
         if not plot_for_zero and index_ == 0:
             continue
 
-        label_i = "z = " + str(round(solver.Z[i], ndigits=3)) + "m"
+        label_i = "z = " + str(round(solver.Z[i], ndigits=3)).replace(".", ",") + " m"
         ax.plot(WL_asc, lIW[i][:], label=label_i, color=cmap_obj(index_/(len(iis)-1)))
 
     ax.set_ylim(-40)
@@ -352,7 +352,7 @@ def plot_delay_for_distance_slice_logarithmic(solver, time_range=None, ax=None,
         )[0][0] for z in z_slice]
 
     for i in iis:
-        label_i = "z = " + str(solver.Z[i]) + "m"
+        label_i = "z = " + str(solver.Z[i]).replace(".", ",") + " m"
         ax.plot(solver.t, lIt[i][:], label=label_i)
 
     ax.set_xlim(time_range)
@@ -408,7 +408,7 @@ def plot_frequency_for_distance_slice(solver, frequency_range=None, ax=None,
         )[0][0] for z in z_slice]
 
     for i in iis:
-        label_i = "z = " + str(solver.Z[i]) + "m"
+        label_i = "z = " + str(solver.Z[i]).replace(".", ",") + " m"
         ax.plot((solver.W - solver.w_0) / 2 / np.pi, IW[i][:], label=label_i)
 
     ax.set_xlim(frequency_range)
@@ -467,7 +467,7 @@ def plot_frequency_for_distance_slice_logarithmic(solver, frequency_range=None,
         )[0][0] for z in z_slice]
 
     for i in iis:
-        label_i = "z = " + str(solver.Z[i]) + "m"
+        label_i = "z = " + str(solver.Z[i]).replace(".", ",") + " m"
         ax.plot((solver.W - solver.w_0) / 2 / np.pi, lIW[i][:], label=label_i)
 
     ax.set_xlim(frequency_range)
@@ -723,52 +723,49 @@ def plot_wavelength_slice_vs_distance_logarithmic(solver, wavelengths,
     if ax is None:
         ax = plt.gca()
 
-    WL_range = [min(wavelengths)-1, max(wavelengths)+1]
-
-    if norm is None:
-        norm = np.max(np.abs(solver.AW)**2)
-
-    lIW = np.fliplr(
-        10 * np.log10(np.abs(solver.AW)**2 / norm,
-                      where=(np.abs(solver.AW)**2 > 0)))
-    WL = 2 * np.pi * c / solver.W  # wavelength grid
-    WL_asc = np.flip(WL, )  # ascending order for interpolation
-    iis = np.logical_and(WL_asc > WL_range[0],
-                         WL_asc < WL_range[1])  # indices of interest
-
-    WL_asc = WL_asc[iis]
-    lIW = lIW[:, iis]
-
-    if plot_gain:
-        lIW2 = np.zeros_like(lIW)
-        for x in range(lIW.shape[1]):
-            for y in range(lIW.shape[0]):
-                try:
-                    lIW2[y, x] = (lIW[y+1, x] - lIW[y, x])/(max(solver.Z)/(len(solver.Z)-1))
-                except IndexError:
-                    lIW2[y, x] = lIW2[y-1, x]
-
-        lIW = lIW2
-
-    interpolator = RectBivariateSpline(solver.Z, WL_asc, lIW)
-    newWL = np.linspace(np.min(WL_asc), np.max(WL_asc), lIW.shape[1])
-    toshow = interpolator(solver.Z, newWL)
-
-    ax.set_xlabel("Długość światłowodu [m]")
-    ax.set_ylabel("Znormalizowana gęstość spektralna [dB]" if not plot_gain else "Przyrost gęstości spektralnej [dB/m]")
-
-    cmap_obj = cm.get_cmap(cmap)
     for index_, wavelength in enumerate(wavelengths):
+        WL_range = [wavelength-10, wavelength+10]
+
+        if norm is None:
+            norm = np.max(np.abs(solver.AW)**2)
+
+        lIW = np.fliplr(
+            10 * np.log10(np.abs(solver.AW)**2 / norm,
+                          where=(np.abs(solver.AW)**2 > 0)))
+        WL = 2 * np.pi * c / solver.W  # wavelength grid
+        WL_asc = np.flip(WL, )  # ascending order for interpolation
+        iis = np.logical_and(WL_asc > WL_range[0],
+                             WL_asc < WL_range[1])  # indices of interest
+
+        WL_asc = WL_asc[iis]
+        lIW = lIW[:, iis]
+
+        if plot_gain:
+            lIW2 = np.zeros_like(lIW)
+            for x in range(lIW.shape[1]):
+                for y in range(lIW.shape[0]):
+                    try:
+                        lIW2[y, x] = (lIW[y+1, x] - lIW[y, x])/(max(solver.Z)/(len(solver.Z)-1))
+                    except IndexError:
+                        lIW2[y, x] = lIW2[y-1, x]
+
+            lIW = lIW2
+
+        interpolator = RectBivariateSpline(solver.Z, WL_asc, lIW)
+        newWL = np.linspace(np.min(WL_asc), np.max(WL_asc), lIW.shape[1])
+        toshow = interpolator(solver.Z, newWL)
+
+        cmap_obj = cm.get_cmap(cmap)
         idx = np.argmin(np.abs(newWL - wavelength))
 
-        # Extract slice vs propagation distance Z
         slice_vals = toshow[:, idx]
 
-        # Plot the slice
-        ax.plot(solver.Z, slice_vals, label=f"λ={wavelength}nm",
+        ax.plot(solver.Z, slice_vals, label=f"λ = {str(wavelength).replace(".", ",")} nm",
                 color=cmap_obj(index_/max((len(wavelengths)-1), 1)))
 
     ax.legend()
+    ax.set_xlabel("Długość światłowodu [m]")
+    ax.set_ylabel("Znormalizowana gęstość spektralna [dB]" if not plot_gain else "Przyrost gęstości spektralnej [dB/m]")
 
     return ax
 

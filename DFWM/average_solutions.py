@@ -73,7 +73,7 @@ def average_solutions(resolution, time_window, z_saves, wavelength, fiber_length
     except MemoryError:
         print("Process interrupted! (MemoryError)")
     except:
-        print("Process interrupted! (Unknown Error")
+        print("Process interrupted! (Unknown Error)")
 
     solutions_with_weights =\
         [(calculate_average(value) if len(value) != 0 else None, len(value) * (solutions_per_averaging ** key))

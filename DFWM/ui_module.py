@@ -10,7 +10,7 @@ class ParameterApp:
 
         self.pretty_names = {
             "resolution": "rozdzielczość czasowa",
-            "time_window": "okno czasowe [ps]",
+            "time_window": "szerokość okna czasowego [ps]",
             "z_saves": "rozdzielczość przestrzenna",
             "wavelength": "długość fali lasera [nm]",
             "fiber_length": "długość światłowodu [m]",
@@ -19,22 +19,20 @@ class ParameterApp:
             "atol": "bezwzględna tolerancja (atol)",
             "n2": "współczynnik Kerra [m^2 / W]",
             "samples": "liczba modelowań",
-            "neff_max": "maksymalny efektywny współczynnik załamania",
             "input_data_filepath": "ścieżka danych wejściowych"
         }
 
         self.params = {
             "resolution": 2**14,
             "time_window": 10,
-            "z_saves": 51,
+            "z_saves": 501,
             "wavelength": 1064,
-            "fiber_length": 0.15,
+            "fiber_length": 0.4,
             "peak_power": 51000,
             "rtol": 1e-3,
             "atol": 1e-4,
             "n2": 2.6e-20,
-            "samples": 1,
-            "neff_max": 10,
+            "samples": 1000,
             "input_data_filepath": "../data/neff_far_detuned_FWM.json"
         }
 
@@ -100,7 +98,7 @@ class ParameterApp:
                     params[key] = default
 
         try:
-            average_solutions(**params)
+            average_solutions(**params, neff_max=10)
         except Exception as e:
             messagebox.showerror("Error", f"An error occurred:\n{str(e)}")
         finally:

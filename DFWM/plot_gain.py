@@ -3,19 +3,31 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import gnlse
 import math
+from matplotlib.ticker import FuncFormatter
 
 mpl.rcParams['font.family'] = 'Times New Roman'
 mpl.rcParams['font.serif'] = ['Times New Roman']
 mpl.rcParams['axes.unicode_minus'] = False
 
+def comma_only_formatter(axis, decimals=2):
+    base = axis.get_major_formatter()
+    def fmt(x, pos):
+        s = base.format_data_short(x)
+        return f"{float(s):.{decimals}f}".replace('.', ',') if decimals > 0 else str(int(round(float(s))))
+    return FuncFormatter(fmt)
+
 def plot_gain(solution_):
     _cmap_1d = "viridis"
     _cmap_2d = "seismic"
+    _margin = -2
 
     plt.figure(figsize=(8, 5), facecolor='w', edgecolor='k')
     gnlse.plot_wavelength_vs_distance_logarithmic(solution_, WL_range=[300, 4000], cmap = _cmap_2d,
                                                   plot_gain=True, use_zero_norm=True,
                                                   norm_scale_inverse_factor=10)
+    ax = plt.gca()
+    ax.xaxis.set_major_formatter(comma_only_formatter(ax.xaxis, decimals=0))
+    ax.yaxis.set_major_formatter(comma_only_formatter(ax.yaxis, decimals=2))
     plt.tight_layout()
     plt.show()
 
@@ -23,14 +35,17 @@ def plot_gain(solution_):
     gnlse.plot_wavelength_vs_distance_logarithmic(solution_, WL_range=[1000, 1100], cmap = _cmap_2d,
                                                   plot_gain=True, use_zero_norm=True,
                                                   norm_scale_inverse_factor=10)
+    ax = plt.gca()
+    ax.xaxis.set_major_formatter(comma_only_formatter(ax.xaxis, decimals=0))
+    ax.yaxis.set_major_formatter(comma_only_formatter(ax.yaxis, decimals=2))
     plt.tight_layout()
     plt.show()
 
-    # _, ax = plt.subplots()
-    # gnlse.plot_wavelength_for_distance_slice_logarithmic(solution_, WL_range=[3400, 3700], ax = ax, norm = None,
-    #                                                      cmap="Blues", plot_gain=True)
-    # ax.set_ylim([-100, 5])
-    # ax.grid(True)
+    # # _, ax = plt.subplots()
+    # # gnlse.plot_wavelength_for_distance_slice_logarithmic(solution_, WL_range=[3400, 3700], ax = ax, norm = None,
+    # #                                                      cmap="Blues", plot_gain=True)
+    # # ax.set_ylim([-100, 5])
+    # # ax.grid(True)
 
     fig = plt.figure(figsize=(8, 5), constrained_layout=True)
     ax = fig.add_subplot(111)
@@ -39,8 +54,11 @@ def plot_gain(solution_):
                                                          norm = None, cmap=_cmap_1d,
                                                          plot_gain=True)
     ax.set_ylim([-750, 2500])
+    ax.set_xlim([3400 - _margin, 3700 + _margin])
     ax.legend(loc='upper right')
     ax.grid(True)
+    ax.xaxis.set_major_formatter(comma_only_formatter(ax.xaxis, decimals=0))
+    ax.yaxis.set_major_formatter(comma_only_formatter(ax.yaxis, decimals=0))
 
     fig = plt.figure(figsize=(8, 5), constrained_layout=True)
     ax = fig.add_subplot(111)
@@ -49,7 +67,10 @@ def plot_gain(solution_):
                                                          norm = None, cmap=_cmap_1d,
                                                          plot_gain=True)
     ax.set_ylim([-1000, 3500])
+    ax.set_xlim([620 - _margin, 640 + _margin])
     ax.grid(True)
+    ax.xaxis.set_major_formatter(comma_only_formatter(ax.xaxis, decimals=0))
+    ax.yaxis.set_major_formatter(comma_only_formatter(ax.yaxis, decimals=0))
 
     fig = plt.figure(figsize=(8, 5), constrained_layout=True)
     ax = fig.add_subplot(111)
@@ -58,7 +79,10 @@ def plot_gain(solution_):
                                                          norm = None, cmap=_cmap_1d,
                                                          plot_gain=True)
     ax.set_ylim([-500, 2000])
+    ax.set_xlim([1050 - _margin, 1080 + _margin])
     ax.grid(True)
+    ax.xaxis.set_major_formatter(comma_only_formatter(ax.xaxis, decimals=0))
+    ax.yaxis.set_major_formatter(comma_only_formatter(ax.yaxis, decimals=0))
 
     plt.legend(loc="upper right")
     plt.show()
@@ -72,6 +96,9 @@ def plot_gain(solution_):
                                                          norm = None, cmap=_cmap_1d,
                                                          plot_gain=True)
     ax.grid(True)
+    ax.xaxis.set_major_formatter(comma_only_formatter(ax.xaxis, decimals=0))
+    ax.yaxis.set_major_formatter(comma_only_formatter(ax.yaxis, decimals=0))
+    ax.set_xlim([3400 - _margin, 3700 + _margin])
 
     fig = plt.figure(figsize=(8, 5), constrained_layout=True)
     ax = fig.add_subplot(111)
@@ -80,6 +107,9 @@ def plot_gain(solution_):
                                                          norm = None, cmap=_cmap_1d,
                                                          plot_gain=True)
     ax.grid(True)
+    ax.xaxis.set_major_formatter(comma_only_formatter(ax.xaxis, decimals=0))
+    ax.yaxis.set_major_formatter(comma_only_formatter(ax.yaxis, decimals=0))
+    ax.set_xlim([620 - _margin, 640 + _margin])
 
     fig = plt.figure(figsize=(8, 5), constrained_layout=True)
     ax = fig.add_subplot(111)
@@ -88,7 +118,10 @@ def plot_gain(solution_):
                                                          norm = None, cmap=_cmap_1d,
                                                          plot_gain=True)
     ax.set_ylim([-1250, 1750])
+    ax.set_xlim([1050 - _margin, 1080 + _margin])
     ax.grid(True)
+    ax.xaxis.set_major_formatter(comma_only_formatter(ax.xaxis, decimals=0))
+    ax.yaxis.set_major_formatter(comma_only_formatter(ax.yaxis, decimals=0))
 
     plt.legend(loc="upper right")
     plt.show()
@@ -98,11 +131,13 @@ def plot_gain(solution_):
 
     fig = plt.figure(figsize=(8, 5), constrained_layout=True)
     ax = fig.add_subplot(111)
+    ax.xaxis.set_major_formatter(comma_only_formatter(ax.xaxis, decimals=2))
+    ax.yaxis.set_major_formatter(comma_only_formatter(ax.yaxis, decimals=0))
 
     # wyidealizowana funkcja z dopasowania do teorii (porównanie)
-    b = 645.45
+    b = 622.5
     c = -120
-    x_0 = 0.2815
+    x_0 = 0.295
     a = 0.024
     eye_guide = lambda x: (b-c)/(1+math.exp(4*(x-x_0)/a)) + c
     ax.plot(solution_.Z, [eye_guide(x) for x in solution_.Z], 'k--', lw=1, label="krzywa trendu")

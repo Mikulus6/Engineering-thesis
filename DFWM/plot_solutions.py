@@ -3,10 +3,18 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import gnlse
 from DFWM.plot_gain import plot_gain
+from matplotlib.ticker import FuncFormatter
 
 mpl.rcParams['font.family'] = 'Times New Roman'
 mpl.rcParams['font.serif'] = ['Times New Roman']
 mpl.rcParams['axes.unicode_minus'] = False
+
+def comma_only_formatter(axis, decimals=2):
+    base = axis.get_major_formatter()
+    def fmt(x, pos):
+        s = base.format_data_short(x)
+        return f"{float(s):.{decimals}f}".replace('.', ',') if decimals > 0 else str(int(round(float(s))))
+    return FuncFormatter(fmt)
 
 def plot_solution(solution_):
     _cmap_1d = "viridis"
@@ -21,6 +29,9 @@ def plot_solution(solution_):
     # gnlse.plot_delay_vs_distance_logarithmic(solution_, time_range=[min(solution_.t),
     #                                                                 max(solution_.t)], cmap = _cmap_2d)
 
+    ax = plt.gca()
+    ax.xaxis.set_major_formatter(comma_only_formatter(ax.xaxis, decimals=0))
+    ax.yaxis.set_major_formatter(comma_only_formatter(ax.yaxis, decimals=2))
     plt.tight_layout()
     plt.show()
 
@@ -34,6 +45,9 @@ def plot_solution(solution_):
     # gnlse.plot_delay_vs_distance_logarithmic(solution_, time_range=[min(solution_.t),
     #                                                                 max(solution_.t)], cmap = _cmap_2d)
 
+    ax = plt.gca()
+    ax.xaxis.set_major_formatter(comma_only_formatter(ax.xaxis, decimals=0))
+    ax.yaxis.set_major_formatter(comma_only_formatter(ax.yaxis, decimals=2))
     plt.tight_layout()
     plt.show()
 
@@ -56,6 +70,8 @@ def plot_solution(solution_):
     ax.set_ylim([-210, -15])
     ax.set_xlim([3400+x_margin, 3700-x_margin])
     ax.grid(True)
+    ax.xaxis.set_major_formatter(comma_only_formatter(ax.xaxis, decimals=0))
+    ax.yaxis.set_major_formatter(comma_only_formatter(ax.yaxis, decimals=0))
 
     fig = plt.figure(figsize=(8, 5), constrained_layout=True)
     ax = fig.add_subplot(111)
@@ -66,6 +82,8 @@ def plot_solution(solution_):
     ax.set_ylim([-210, 0])
     ax.set_xlim([620+x_margin, 640-x_margin])
     ax.grid(True)
+    ax.xaxis.set_major_formatter(comma_only_formatter(ax.xaxis, decimals=0))
+    ax.yaxis.set_major_formatter(comma_only_formatter(ax.yaxis, decimals=0))
 
     fig = plt.figure(figsize=(8, 5), constrained_layout=True)
     ax = fig.add_subplot(111)
@@ -76,6 +94,8 @@ def plot_solution(solution_):
     ax.set_ylim([-210, 10])
     ax.set_xlim([1050+x_margin, 1080-x_margin])
     ax.grid(True)
+    ax.xaxis.set_major_formatter(comma_only_formatter(ax.xaxis, decimals=0))
+    ax.yaxis.set_major_formatter(comma_only_formatter(ax.yaxis, decimals=0))
 
     plt.legend(loc="upper right")
     plt.show()
@@ -91,6 +111,8 @@ def plot_solution(solution_):
     ax.set_ylim([-210, -90])
     ax.set_xlim([3400+x_margin, 3700-x_margin])
     ax.grid(True)
+    ax.xaxis.set_major_formatter(comma_only_formatter(ax.xaxis, decimals=0))
+    ax.yaxis.set_major_formatter(comma_only_formatter(ax.yaxis, decimals=0))
 
     fig = plt.figure(figsize=(8, 5), constrained_layout=True)
     ax = fig.add_subplot(111)
@@ -101,6 +123,8 @@ def plot_solution(solution_):
     ax.set_ylim([-210, -85])
     ax.set_xlim([620+x_margin, 640-x_margin])
     ax.grid(True)
+    ax.xaxis.set_major_formatter(comma_only_formatter(ax.xaxis, decimals=0))
+    ax.yaxis.set_major_formatter(comma_only_formatter(ax.yaxis, decimals=0))
 
     fig = plt.figure(figsize=(8, 5), constrained_layout=True)
     ax = fig.add_subplot(111)
@@ -111,6 +135,8 @@ def plot_solution(solution_):
     ax.set_ylim([-210, 10])
     ax.set_xlim([1050+x_margin, 1080-x_margin])
     ax.grid(True)
+    ax.xaxis.set_major_formatter(comma_only_formatter(ax.xaxis, decimals=0))
+    ax.yaxis.set_major_formatter(comma_only_formatter(ax.yaxis, decimals=0))
 
     plt.legend(loc="upper right")
     plt.show()
@@ -120,12 +146,15 @@ def plot_solution(solution_):
     fig = plt.figure(figsize=(8, 5), constrained_layout=True)
     ax = fig.add_subplot(111)
     gnlse.visualization.plot_wavelength_slice_vs_distance_logarithmic(solution_,
-                                                                      wavelengths=[626, 1064, 3550],
+                                                                      wavelengths=[626, 3550],
                                                                       ax = ax,
                                                                       norm = plot_norm, cmap=_cmap_1d)
 
-    ax.set_xlim([0.01, max(solution_.Z)])
+    ax.set_xlim([0, max(solution_.Z)])
+    ax.set_ylim([-250, 10])
     ax.grid(True)
+    ax.xaxis.set_major_formatter(comma_only_formatter(ax.xaxis, decimals=2))
+    ax.yaxis.set_major_formatter(comma_only_formatter(ax.yaxis, decimals=0))
     plt.show()
 
 
